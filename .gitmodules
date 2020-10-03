@@ -1,0 +1,3 @@
+[submodule "salt/roots/formulas/latex-formula"]
+	path = salt/roots/formulas/latex-formula
+	url = https://github.com/extra2000/latex-formula.git
