@@ -19,7 +19,7 @@ jobs:
       script:
         - travis_wait sudo vagrant up --provider=libvirt latex-box
         - travis_wait sudo vagrant ssh latex-box -- sudo salt-call state.sls podman
-        - travis_wait sudo vagrant ssh latex-box -- sudo salt-call state.sls latex
+        - travis_wait 60 sudo vagrant ssh latex-box -- sudo salt-call state.sls latex
         - sudo vagrant destroy --force latex-box
 
     - stage: release
