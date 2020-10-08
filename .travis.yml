@@ -1,0 +1,41 @@
+
+---
+dist: bionic
+language: minimal
+
+cache:
+  directories:
+    - /home/travis/.vagrant.d/boxes
+
+jobs:
+  include:
+
+    - stage: build
+      install:
+        - sudo apt-get update && sudo apt-get install -y bridge-utils dnsmasq-base ebtables libvirt-bin libvirt-dev qemu-kvm qemu-utils ruby-dev
+        - sudo wget -nv https://releases.hashicorp.com/vagrant/2.2.9/vagrant_2.2.9_x86_64.deb
+        - sudo dpkg -i vagrant_2.2.9_x86_64.deb
+        - sudo vagrant plugin install vagrant-libvirt vagrant-scp vagrant-reload
+      script:
+        - travis_wait sudo vagrant up --provider=libvirt latex-box
+        - travis_wait sudo vagrant ssh latex-box -- sudo salt-call state.sls podman
+        - travis_wait 60 sudo vagrant ssh latex-box -- sudo salt-call state.sls latex
+        - sudo vagrant destroy --force latex-box
+
+    - stage: release
+      install:
+        - wget https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh
+        - sudo bash install.sh
+        - nvm install lts/*
+        - npm i -D semantic-release @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/changelog @semantic-release/npm @semantic-release/github @semantic-release/git @semantic-release/exec @commitlint/cli @commitlint/config-conventional
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script:
+          - npx semantic-release
+        on:
+          all_branches: true
+
+notifications:
+  slack:
+    secure: c+NC/gXyR7N5atXGOSuWv5i0UX4k8r1IHMwVlrceJ/u8DHlQVeb2nSH4d1wmmftBFsWbZKdTXQmFS7yddJ2PgO6Ir+/pbsWCiIA1uxoAaOYUKqQRmQS5L7X2MI5cndJtSz6HgF8SZobj511y70PTvI78D0hdd1ELumDkbpeD+1pzNLySB6y3PzyTynrVgVyuMoxsieuZ6ftxe5TjavA6p+zpAAri77mG3bkiFr5Ut3v786tH/jp7E8DU3Vj+RbhrINH4K9+WHvWaJgT9v16vLu/90+N1Pw0whq7NlUQX5FlVXmAiYqo6rq+lDymhDM/Hxa/p3+UNeGIBRzbMM1r+XW6a9VVGTPCqLK/E8YS+rx9hGQ9/E09VZ0TOfWHCWi1JILlt+SQkBHbDs1zH8B3SMBpZeEiONzyGq2pC7gnLyxwEBvH0LprUGeRBCte5lifeQhQ4BQo0+s9gtjyWddJVNRkmRoScDQ+IIUMnUpR1ZH6HLcW4ZBJTf+W9HC+32ZJK6lfYhu92aEZQY56/2/17J2O2D9THX4RYHGN5iD+wErwNPvXLc97KHzg0JyKoIO/0POluNcOPlKHEsH0s3Sj4fwNLJr9dvDDfJZAJpIjp1XVtZq5W7DA1/Lpw4AAzceeD3T6kvXEhk8Irfw8Xc9DmoJQ0nKDWxI2Jjt85ecNBz+o=
