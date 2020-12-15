@@ -18,8 +18,8 @@ Choose one of Vagrant files from `vagrant/examples/`. For example:
 $ cp vagrant/examples/Vagrantfile.latex-box.fedora-33.x86_64.example vagrant/Vagrantfile.latex-box
 ```
 
+Create Vagrant box and then provision it:
 ```
 $ vagrant up --provider=libvirt
-$ vagrant ssh latex-box -- sudo salt-call state.sls podman
-$ vagrant ssh latex-box -- sudo salt-call state.sls latex
+$ vagrant ssh latex-box -- sudo salt-call state.highstate
 ```
