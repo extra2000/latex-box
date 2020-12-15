@@ -22,4 +22,5 @@ Create Vagrant box and then provision it:
 ```
 $ vagrant up --provider=libvirt
 $ vagrant ssh latex-box -- sudo salt-call state.highstate
+$ vagrant ssh latex-box -- sudo salt-call state.sls latex
 ```
