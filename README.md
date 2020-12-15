@@ -13,6 +13,11 @@ $ cd latex-box
 
 ## Preparing environment
 
+Choose one of Vagrant files from `vagrant/examples/`. For example:
+```
+$ cp vagrant/examples/Vagrantfile.latex-box.fedora-33.x86_64.example vagrant/Vagrantfile.latex-box
+```
+
 ```
 $ vagrant up --provider=libvirt
 $ vagrant ssh latex-box -- sudo salt-call state.sls podman
