@@ -9,8 +9,9 @@ install:
   - git submodule init
   - git submodule update
 build_script:
+  - cp vagrant/examples/Vagrantfile.latex-box.fedora-33.x86_64.example vagrant/Vagrantfile.latex-box
   - sudo vagrant up --provider=libvirt latex-box
-  - sudo vagrant ssh latex-box -- sudo salt-call state.sls podman
+  - sudo vagrant ssh latex-box -- sudo salt-call state.highstate
   - sudo vagrant ssh latex-box -- sudo salt-call state.sls latex
   - sudo vagrant destroy --force latex-box
 on_success:
