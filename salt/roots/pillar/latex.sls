@@ -1,2 +1,5 @@
 latex:
-  user: vagrant
+  lookup:
+    hostuser:
+      name: vagrant
+      group: vagrant
